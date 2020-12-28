@@ -533,3 +533,35 @@ autoindex on
 
    ![image-20201228090117897](Nginx.assets/image-20201228090117897.png)
 
+# 8、Nginx的原理
+
+## 8.1、master&worker
+
+![image-20201228091143279](Nginx.assets/image-20201228091143279.png)
+
+![image-20201228091323864](Nginx.assets/image-20201228091323864.png)
+
+## 8.2、worker工作的原理
+
+![image-20201228091429790](Nginx.assets/image-20201228091429790.png)
+
+> 一个master 多个worker
+
+1. 可以使用`nginx -s reload`热部署
+2. 每个 worker 是独立的进程，如果有其中的一个 worker 出现问题，其他 worker 独立的，继续进行争抢，实现请求过程，不会造成服务中断
+
+> 需要设置多少个worker合适
+
+1. 服务器CPU几核设置几个worker最合适
+
+> 连接数 worker_connection
+
+1. 发送请求，占用了 worker 的几个连接数？
+
+   答案： 2 或者 4 个
+
+2. nginx 有一 个 master ，有四个 woker ，每个 worker 支持最大的连接数 1024 ，支持的最大并发数是多少？
+
+   答案：普通的静态访问最大并发数是： worker_connections * worker_processes /2
+
+   答案：而如果是 HTTP 作 为反向代理来说，最大并发数量应该是 worker_connections * worker_processes/4 。
